@@ -16,19 +16,26 @@
 
 package com.rockerhieu.emojicon;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+
 import com.rockerhieu.emojicon.emoji.Emojicon;
+
+import java.util.List;
 
 /**
  * @author Hieu Rocker (rockerhieu@gmail.com)
  */
 class EmojiAdapter extends ArrayAdapter<Emojicon> {
     private boolean mUseSystemDefault = false;
+
+    EmojiView.onEmojiClickListener onEmojiClickListener;
+    public EmojiAdapter(Context context, Emojicon[] data, EmojiView.onEmojiClickListener onEmojiClickListener) {
+        super(context, R.layout.emojicon_item, data);
+        this.onEmojiClickListener = onEmojiClickListener;
+    }
 
     public EmojiAdapter(Context context, List<Emojicon> data) {
         super(context, R.layout.emojicon_item, data);
@@ -60,9 +67,15 @@ class EmojiAdapter extends ArrayAdapter<Emojicon> {
             holder.icon.setUseSystemDefault(mUseSystemDefault);
             v.setTag(holder);
         }
-        Emojicon emoji = getItem(position);
+        final Emojicon emoji = getItem(position);
         ViewHolder holder = (ViewHolder) v.getTag();
         holder.icon.setText(emoji.getEmoji());
+        holder.icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onEmojiClickListener.onEmojiSelected(emoji);
+            }
+        });
         return v;
     }
 

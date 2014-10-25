@@ -14,6 +14,64 @@
   ~ limitations under the License.
   -->
 
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TabHost
+        android:id="@android:id/tabhost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                />
+
+            <ImageView
+                android:id="@+id/emoji_backspace"
+                android:layout_width="wrap_content"
+                android:padding="10dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_emoji_backspace_light"
+                />
+
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/tab1"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
+            </FrameLayout>
+
+
+        </LinearLayout>
+    </TabHost>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/emojis_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
+    <!--
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:background="@drawable/keyboard_background_holo"
   android:layout_width="match_parent"
@@ -131,4 +189,4 @@
     android:layout_height="1px"
     android:layout_below="@id/emojis_tab"
     android:background="@color/horizontal_divider" />
-</RelativeLayout>
+</RelativeLayout>-->
