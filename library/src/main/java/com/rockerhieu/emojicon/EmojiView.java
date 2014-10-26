@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.TabHost;
 
 import com.rockerhieu.emojicon.emoji.Emojicon;
 import com.rockerhieu.emojicon.emoji.Nature;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
 /**
  * Created by kuFEAR on 7/30/14.
  */
-public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeListener, TabHost.OnTabChangeListener {
+public class EmojiView extends LinearLayout {
     private onEmojiClickListener onEmojiClickListener;
     public static final int EMOJI_DARK_STYLE = 0;
     public static final int EMOJI_LIGHT_STYLE = 1;
@@ -53,7 +52,7 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
 
     // Views
     private ViewPager emojisPager;
-    private TabHost tabs;
+    private PagerSlidingTabStrip tabs;
 
     public EmojiView(Context context, int style, onEmojiClickListener onEmojiClickListener) {
         super(context);
@@ -86,7 +85,7 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.emojicons, this, true);
         emojisPager = (ViewPager) findViewById(R.id.emojis_pager);
-        tabs = (TabHost) view.findViewById(android.R.id.tabhost);
+        tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
 
         if (isInEditMode()) return;
 
@@ -98,11 +97,14 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
             views.add(gridView);
         }
 
-        // Create tabs in tabhost
-        createTabs();
-
         emojisPager.setAdapter(new EmojisPagerAdapter());
-        emojisPager.setOnPageChangeListener(this);
+        tabs.setViewPager(emojisPager);
+        tabs.setShouldExpand(true);
+        tabs.setIndicatorColor(0xff33b5e5);
+        tabs.setIndicatorHeight(6);
+        tabs.setUnderlineHeight(6);
+        tabs.setUnderlineColor(0x66000000);
+        tabs.setTabBackground(0);
 
         // Backspace onClickListener
         view.findViewById(R.id.emoji_backspace).setOnTouchListener(new RepeatListener(1000, 50, new OnClickListener() {
@@ -111,18 +113,6 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
                 onEmojiClickListener.onBackspace();
             }
         }));
-    }
-
-    private void createTabs() {
-        tabs.setup();
-        TabHost.TabSpec spec;
-        for (int icon : icons) {
-            spec = tabs.newTabSpec(String.valueOf(icon));
-            spec.setIndicator("", getResources().getDrawable(icon));
-            spec.setContent(R.id.tab1);
-            tabs.addTab(spec);
-        }
-        tabs.setOnTabChangedListener(this);
     }
 
     /**
@@ -154,33 +144,17 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
         this.onEmojiClickListener = paramOnEmojiClickListener;
     }
 
-    @Override
-    public void onPageScrolled(int i, float v, int i2) {
-    }
-
-    @Override
-    public void onPageSelected(int i) {
-        if (i != tabs.getCurrentTab())
-            tabs.setCurrentTab(i);
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int i) {
-    }
-
-    @Override
-    public void onTabChanged(String tabId) {
-        if (emojisPager.getCurrentItem() != tabs.getCurrentTab())
-            emojisPager.setCurrentItem(tabs.getCurrentTab());
-    }
-
-    private class EmojisPagerAdapter extends PagerAdapter {
+    private class EmojisPagerAdapter extends PagerAdapter  implements PagerSlidingTabStrip.IconTabProvider {
 
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             View localObject = views.get(position);
             container.removeView(localObject);
+        }
+
+        public int getPageIconResId(int position) {
+            return icons[position];
         }
 
         @Override

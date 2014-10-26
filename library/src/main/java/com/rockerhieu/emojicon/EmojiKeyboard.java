@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Handler;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -55,7 +56,7 @@ public class EmojiKeyboard {
                     * Calculate soft keyboard height
                     * */
                     int dHeight = oldBottom - bottom;
-                    boolean validHeight = emojiKbHeight == -1 && dHeight > 50 && bottom != oldBottom;
+                    boolean validHeight = emojiKbHeight == -1 && dHeight > 80 && bottom != oldBottom;
 
                     /*
                     * Сheck twice because the keyboard may have been switched
@@ -92,9 +93,13 @@ public class EmojiKeyboard {
             createEmojiKeyboard();
         }
         if (!isShowed()) {
-            emojiKeyboardPopup.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    emojiKeyboardPopup.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+                    resizeEmoji();
+                }
+            }, 10L);
 
-            resizeEmoji();
         } else {
             dismissEmojiKeyboard();
         }
@@ -143,7 +148,7 @@ public class EmojiKeyboard {
     }
 
     public int setEmojiKeyboardHeight() {
-        return emojiKbHeight == -1 && emojiKbHeight != screenHeight
+        return emojiKbHeight == -1 && emojiKbHeight != screenHeight && emojiKbHeight < 80
                 ? (getDisplayDimensions(context).y / 2)
                 : emojiKbHeight;
     }
